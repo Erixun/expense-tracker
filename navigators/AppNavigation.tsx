@@ -1,15 +1,36 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeScreen } from '../screens';
+import { HomeScreen, ManageExpenseScreen } from '../screens';
+import HomeNavigation from './HomeNavigation';
+import { Button } from 'react-native';
 
-const NativeStack = createNativeStackNavigator();
+export type AppStackParams = {
+  Home: undefined;
+  ManageExpense: undefined;
+};
+
+const NativeStack = createNativeStackNavigator<AppStackParams>();
 
 export default function AppNavigation() {
   return (
     <NativeStack.Navigator>
       {/* <NativeStack.Screen name="Loading" component={LoadingScreen} />
       <NativeStack.Screen name="Login" component={LoginScreen} /> */}
-      <NativeStack.Screen name="Home" component={HomeScreen} />
       <NativeStack.Screen
+        name="Home"
+        component={HomeNavigation}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <NativeStack.Screen
+        name="ManageExpense"
+        component={ManageExpenseScreen}
+        options={{
+          headerShown: true,
+          presentation: 'modal',
+        }}
+      />
+      {/* <NativeStack.Screen
         name="Add"
         component={AddExpenseScreen}
         options={{
@@ -24,7 +45,7 @@ export default function AppNavigation() {
           headerShown: false,
           presentation: 'modal',
         }}
-      />
+      /> */}
     </NativeStack.Navigator>
   );
 }

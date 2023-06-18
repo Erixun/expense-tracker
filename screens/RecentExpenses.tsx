@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 
 export const RecentExpenses = () => {
   const [expenses, setExpenses] = useState([]);
@@ -24,23 +25,11 @@ export const RecentExpenses = () => {
 
   return (
     <View style={$container}>
-      <Text style={$title}>Recent Expenses</Text>
+      {/* <Text style={$title}>Recent Expenses</Text> */}
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <Text>Recent Expenses</Text>
-        // <FlatList
-        //   data={expenses}
-        //   renderItem={({ item }) => (
-        //     <ExpenseItem
-        //       id={item.id}
-        //       title={item.title}
-        //       amount={item.amount}
-        //       date={item.date}
-        //     />
-        //   )}
-        //   keyExtractor={(item) => item.id}
-        // />
+        <ExpensesOutput expensesPeriod="the last 7 days" />
       )}
     </View>
   );

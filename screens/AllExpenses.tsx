@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, TextStyle, ViewStyle, Text } from "react-native";
+import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 
 export const AllExpenses = () => {
   // const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -38,14 +39,8 @@ export const AllExpenses = () => {
 
   return (
     <View style={$container}>
-      <Text style={$title}>All Expenses</Text>
-      {/* <FlatList
-        data={expenses}
-        renderItem={({ item }) => <ExpenseItem expense={item} />}
-        keyExtractor={(item) => item.id.toString()}
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
-      /> */}
+      {/* <Text style={$title}>All Expenses</Text> */}
+      <ExpensesOutput expensesPeriod="All Expenses" />
     </View>
   );
 }

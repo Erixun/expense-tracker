@@ -1,4 +1,4 @@
-import { FlatList, View, Text, ListRenderItem } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import Expense from '../../types/Expense';
 
 interface ExpensesListProps {

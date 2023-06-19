@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  View,
-  Text,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { ActivityIndicator, View, ViewStyle } from 'react-native';
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 
 export const RecentExpenses = () => {
@@ -25,7 +18,6 @@ export const RecentExpenses = () => {
 
   return (
     <View style={$container}>
-      {/* <Text style={$title}>Recent Expenses</Text> */}
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -39,9 +31,4 @@ const $container: ViewStyle = {
   flex: 1,
   alignItems: 'center',
   justifyContent: 'center',
-};
-
-const $title: TextStyle = {
-  fontSize: 20,
-  fontWeight: 'bold',
 };

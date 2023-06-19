@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, TextStyle, ViewStyle, Text } from "react-native";
+import { View, TextStyle, ViewStyle } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 
 export const AllExpenses = () => {
@@ -39,7 +39,6 @@ export const AllExpenses = () => {
 
   return (
     <View style={$container}>
-      {/* <Text style={$title}>All Expenses</Text> */}
       <ExpensesOutput expensesPeriod="All Expenses" />
     </View>
   );
@@ -49,9 +48,4 @@ const $container: ViewStyle = {
   flex: 1,
   alignItems: "center",
   justifyContent: "center",
-};
-
-const $title: TextStyle = {
-  fontSize: 20,
-  fontWeight: "bold",
 };

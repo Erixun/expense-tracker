@@ -13,8 +13,9 @@ const ExpensesSummary = ({ expenses, periodName }: ExpensesSummaryProps) => {
 
   return (
     <View>
-      {/* <Text>{periodName}</Text> */}
-      <Text>Total: {totalAmount.toFixed(2)} kr for {periodName}</Text>
+      <Text>
+        Total: {totalAmount.toFixed(2)} kr for {periodName}
+      </Text>
     </View>
   );
 };

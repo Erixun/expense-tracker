@@ -4,9 +4,17 @@ import { StatusBar } from 'expo-status-bar';
 import * as Notifications from 'expo-notifications';
 import * as Crypto from 'expo-crypto';
 import { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  Platform,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import * as Device from 'expo-device';
 import AppNavigation from './navigators/AppNavigation';
+import * as SecureStore from 'expo-secure-store';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -17,6 +25,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
+  const [myDeviceId, setMyDeviceId] = useState<string>('');
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState<
     false | Notifications.Notification
@@ -39,6 +48,8 @@ export default function App() {
         console.log(response);
       });
 
+    handleDeviceId();
+
     return () => {
       Notifications.removeNotificationSubscription(
         notificationListener.current!
@@ -47,34 +58,83 @@ export default function App() {
     };
   }, []);
 
+  const handleDeviceId = async () => {
+    let deviceId = await SecureStore.getItemAsync('deviceId');
+    if (!deviceId) {
+      deviceId = Crypto.randomUUID();
+      await SecureStore.setItemAsync('deviceId', deviceId);
+    }
+
+    setMyDeviceId(deviceId);
+  };
+  
+  const sendPushNotification = async (pushToken?: string) => {
+    const expoPushToken = pushToken || 'aPelmhD5_LHRrPGoQfKMag';
+    const message = {
+      to: `ExponentPushToken[${expoPushToken}]`,
+      sound: 'default',
+      title: 'Original Title',
+      body: 'And here is the body!',
+      data: { data: 'goes here' },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-Encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('Notification sent successfully');
+        }
+      })
+      .catch((err: Error) => {
+        alert('Notification failed to send');
+      });
+  };
+
   return (
     <NavigationContainer>
       <AppNavigation />
-    {/* <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-      }}
-      >
-      <Text>Your expo push token: {expoPushToken}</Text>
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>
-          Title: {notification && notification.request?.content.title}{' '}
-        </Text>
-        <Text>Body: {notification && notification.request?.content.body}</Text>
-        <Text>
-          Data:{' '}
-          {notification && JSON.stringify(notification.request.content.data)}
-        </Text>
-      </View>
-      <Button
-        title="Press to schedule a notification"
-        onPress={async () => {
-          await schedulePushNotification();
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'space-around',
         }}
+      >
+        <Text>Your device id: {myDeviceId}</Text>
+        <Text>Your expo push token: {expoPushToken}</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text>
+            Title: {notification && notification.request?.content.title}{' '}
+          </Text>
+          <Text>
+            Body: {notification && notification.request?.content.body}
+          </Text>
+          <Text>
+            Data:{' '}
+            {notification && JSON.stringify(notification.request.content.data)}
+          </Text>
+        </View>
+        <TextInput />
+        <Button
+          title="Push-notify my device"
+          onPress={async () => {
+            await sendPushNotification();
+          }}
         />
-    </View> */}
+        <Button
+          title="Press to schedule a notification"
+          onPress={async () => {
+            await schedulePushNotification();
+          }}
+        />
+      </View>
     </NavigationContainer>
   );
 }
@@ -105,7 +165,7 @@ async function registerForPushNotificationsAsync() {
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
-      console.log(existingStatus);
+    console.log(existingStatus);
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();

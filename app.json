@@ -26,10 +26,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#eefbeb"
-      }
+      },
+      "package": "com.erixun.expensetracker"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "133e3877-e9e0-4c96-b091-3262327905ce"
+      }
     }
   }
 }

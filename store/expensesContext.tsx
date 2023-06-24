@@ -69,15 +69,18 @@ type FreshExpense = Omit<Expense, 'id'>;
 export const ExpensesContext = createContext({
   expenses: new Array<Expense>(),
   addExpense: ({ description, amount, date }: FreshExpense) => {},
+  setExpenses: (expenses: Expense[]) => {},
   deleteExpense: (id: string) => {},
   updateExpense: ({ id, description, amount, date }: Expense) => {},
 });
 
-function expensesReducer(state: any, action: any) {
+function expensesReducer(state: Expense[], action: any): Expense[] {
   switch (action.type) {
     case 'ADD':
       const id = new Date().toString() + Math.random().toString();
       return [{ ...action.payload, id: id }, ...state];
+    case 'SET':
+      return action.payload;
     case 'UPDATE':
       const updatableExpenseIndex = state.findIndex(
         (expense: Expense) => expense.id === action.payload.id
@@ -95,10 +98,14 @@ function expensesReducer(state: any, action: any) {
 }
 
 function ExpensesContextProvider({ children }: { children: JSX.Element }) {
-  const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
+  const [expensesState, dispatch] = useReducer(expensesReducer, [])//DUMMY_EXPENSES);
 
   function addExpense(expenseData: FreshExpense) {
     dispatch({ type: 'ADD', payload: expenseData });
+  }
+
+  function setExpenses(expenses: Expense[]) {
+    dispatch({ type: 'SET', payload: expenses });
   }
 
   function deleteExpense(id: string) {
@@ -112,6 +119,7 @@ function ExpensesContextProvider({ children }: { children: JSX.Element }) {
   const value = {
     expenses: expensesState,
     addExpense: addExpense,
+    setExpenses: setExpenses,
     deleteExpense: deleteExpense,
     updateExpense: updateExpense,
   };

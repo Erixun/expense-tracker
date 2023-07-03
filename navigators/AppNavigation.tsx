@@ -5,7 +5,7 @@ import { Button } from 'react-native';
 
 export type AppStackParams = {
   Home: undefined;
-  ManageExpense: { editedExpenseId: string };
+  ManageExpense: { editedExpenseId?: string };
 };
 
 const NativeStack = createNativeStackNavigator<AppStackParams>();

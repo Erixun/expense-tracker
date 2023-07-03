@@ -23,7 +23,7 @@ const HomeNavigation: FC<HomeNavigationProps> = ({ navigation }) => {
         headerRight: () => (
           <Button
             title="Add"
-            onPress={() => navigation.navigate('ManageExpense')}
+            onPress={() => navigation.navigate('ManageExpense', {editedExpenseId: undefined})}
           />
         ),
       }}

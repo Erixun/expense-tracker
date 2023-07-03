@@ -5,7 +5,8 @@ const API_URL = 'https://expense-tracker-1b6e0-default-rtdb.firebaseio.com';
 //https://react-native-course-defe9-default-rtdb.europe-west1.firebasedatabase.app/
 export const storeExpense = async (expense: Expense) => {
   const response = await axios.post(`${API_URL}/expenses.json`, expense);
-  return response.data;
+  const id = response.data.name;
+  return id;
 };
 
 export const fetchExpenses = async () => {

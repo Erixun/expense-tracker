@@ -100,7 +100,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <AppNavigation />
-      <View
+      {/* <View
         style={{
           flex: 1,
           alignItems: 'center',
@@ -134,7 +134,7 @@ export default function App() {
             await schedulePushNotification();
           }}
         />
-      </View>
+      </View> */}
     </NavigationContainer>
   );
 }

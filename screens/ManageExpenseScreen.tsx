@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, ViewStyle, TextStyle } from 'react-native';
 import { ExpensesContext } from '../store/expensesContext';
 import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -26,15 +26,21 @@ export const ManageExpenseScreen = ({
   }, [navigation, isEditing]);
 
   return (
-    <View>
+    <View style={$container}>
       <ExpenseForm />
-      <View>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text>Cancel</Text>
+      <View style={$buttonGroup}>
+        <Pressable
+          android_ripple={{ color: 'grey' }}
+          style={[$button]}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={$btnText}>Cancel</Text>
         </Pressable>
         <Pressable
+          android_ripple={{ color: 'green' }}
+          style={[$button, { backgroundColor: 'purple' }]}
           onPress={() => {
-            console.log('save - not implemented')
+            console.log('save - not implemented');
             if (isEditing) {
               // expensesContext.editExpense(editedExpenseId!);
             } else {
@@ -43,9 +49,36 @@ export const ManageExpenseScreen = ({
             navigation.goBack();
           }}
         >
-          <Text>Save</Text>
+          <Text style={[$btnText, { color: 'white' }]}>Save</Text>
         </Pressable>
       </View>
     </View>
   );
+};
+
+const $container: ViewStyle = {
+  flex: 1,
+  justifyContent: 'flex-start',
+  padding: 10,
+};
+
+const $buttonGroup: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  // gap: 10,
+  width: '100%',
+};
+
+const $button: ViewStyle = {
+  width: '40%',
+  padding: 10,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: 'black',
+  alignItems: 'center',
+};
+
+const $btnText: TextStyle = {
+  fontSize: 16,
+  fontWeight: 'bold',
 };

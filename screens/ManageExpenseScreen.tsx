@@ -4,11 +4,14 @@ import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '../navigators/AppNavigation';
 import { ExpenseForm } from '../components/ManageExpense/ExpenseForm';
+import Expense from '../types/Expense';
 
-type ManageExpenseScreenProps = NativeStackScreenProps<
+export type ManageExpenseScreenProps = NativeStackScreenProps<
   AppStackParams,
   'ManageExpense'
 >;
+
+export type ExpenseNavigation = Omit<ManageExpenseScreenProps, 'route'>;
 
 export const ManageExpenseScreen = ({
   route,
@@ -25,10 +28,31 @@ export const ManageExpenseScreen = ({
     });
   }, [navigation, isEditing]);
 
+  const cancelHandler = () => {
+    navigation.goBack();
+  };
+
+  const submitHandler = (data: Partial<Expense>) => {
+    console.log('submit - not implemented');
+    console.log('intend to submit: ', data)
+    if (isEditing) {
+      // expensesContext.editExpense(editedExpenseId!, data);
+    } else {
+      // expensesContext.addExpense(data);
+    }
+    navigation.goBack();
+  };
+
   return (
     <View style={$container}>
-      <ExpenseForm />
-      <View style={$buttonGroup}>
+      <ExpenseForm
+        submitButtonLabel={isEditing ? 'Update' : 'Save'}
+        onCancel={cancelHandler}
+        onSubmit={submitHandler}
+        isEditing={isEditing}
+        navigation={navigation}
+      />
+      {/* <View style={$buttonGroup}>
         <Pressable
           android_ripple={{ color: 'grey' }}
           style={[$button]}
@@ -38,7 +62,7 @@ export const ManageExpenseScreen = ({
         </Pressable>
         <Pressable
           android_ripple={{ color: 'green' }}
-          style={[$button, { backgroundColor: 'purple' }]}
+          style={[$button, { backgroundColor: palette.primary.main }]}
           onPress={() => {
             console.log('save - not implemented');
             if (isEditing) {
@@ -51,7 +75,7 @@ export const ManageExpenseScreen = ({
         >
           <Text style={[$btnText, { color: 'white' }]}>Save</Text>
         </Pressable>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -62,23 +86,23 @@ const $container: ViewStyle = {
   padding: 10,
 };
 
-const $buttonGroup: ViewStyle = {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  // gap: 10,
-  width: '100%',
-};
+// const $buttonGroup: ViewStyle = {
+//   flexDirection: 'row',
+//   justifyContent: 'space-around',
+//   // gap: 10,
+//   width: '100%',
+// };
 
-const $button: ViewStyle = {
-  width: '40%',
-  padding: 10,
-  borderRadius: 10,
-  borderWidth: 1,
-  borderColor: 'black',
-  alignItems: 'center',
-};
+// const $button: ViewStyle = {
+//   width: '40%',
+//   padding: 10,
+//   borderRadius: 10,
+//   borderWidth: 1,
+//   borderColor: 'black',
+//   alignItems: 'center',
+// };
 
-const $btnText: TextStyle = {
-  fontSize: 16,
-  fontWeight: 'bold',
-};
+// const $btnText: TextStyle = {
+//   fontSize: 16,
+//   fontWeight: 'bold',
+// };

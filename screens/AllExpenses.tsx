@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { View, TextStyle, ViewStyle } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
+import Expense from "../types/Expense";
+import { fetchExpenses } from "../utils/http";
 
 export const AllExpenses = () => {
-  // const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const fetchExpenses = async () => {
+  const getExpenses = async () => {
     try {
-      // const expenses = await getExpenses();
-      // setExpenses(expenses);
+      const expenses = await fetchExpenses();
+      setExpenses(expenses);
     } catch (error) {
       // setError(error.message);
     } finally {
@@ -21,12 +23,12 @@ export const AllExpenses = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchExpenses();
+    await getExpenses();
     setRefreshing(false);
   };
 
   useEffect(() => {
-    fetchExpenses();
+    getExpenses();
   }, []);
 
   if (loading) {

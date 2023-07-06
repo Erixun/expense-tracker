@@ -10,7 +10,9 @@ export const storeExpense = async (expense: Expense) => {
 };
 
 export const fetchExpenses = async () => {
-  const response = await axios.get(`${API_URL}/expenses.json`);
+  const response = await import('../data/expenses').then(module => {
+    return {data: module.default}
+  })//axios.get(`${API_URL}/expenses.json`);
 
   const expenses: Expense[] = [];
 

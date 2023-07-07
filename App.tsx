@@ -15,6 +15,7 @@ import {
 import * as Device from 'expo-device';
 import AppNavigation from './navigators/AppNavigation';
 import * as SecureStore from 'expo-secure-store';
+import ExpensesContextProvider from './store/expensesContext';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -67,7 +68,7 @@ export default function App() {
 
     setMyDeviceId(deviceId);
   };
-  
+
   const sendPushNotification = async (pushToken?: string) => {
     const expoPushToken = pushToken || 'aPelmhD5_LHRrPGoQfKMag';
     const message = {
@@ -99,7 +100,9 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <AppNavigation />
+      <ExpensesContextProvider>
+        <AppNavigation />
+      </ExpensesContextProvider>
       {/* <View
         style={{
           flex: 1,

@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, ViewStyle, Text, TextStyle, Pressable } from 'react-native';
 import { Input } from './Input';
 import { palette } from '../../theme/colors';
 import { ExpenseNavigation } from '../../screens';
 import Expense from '../../types/Expense';
+import { ExpensesContext, FreshExpense } from '../../store/expensesContext';
 
 type FieldKey = 'amount' | 'date' | 'description';
 
 type ExpenseFormProps = {
   isEditing: boolean;
   onCancel: () => void;
-  onSubmit: (data: Partial<Expense>) => void;
+  onSubmit: (data: FreshExpense) => void;
   submitButtonLabel: string;
+  defaultValues?: FreshExpense;
 } & ExpenseNavigation;
 
 export const ExpenseForm = ({
@@ -20,11 +22,13 @@ export const ExpenseForm = ({
   onCancel,
   onSubmit,
   submitButtonLabel,
+  defaultValues
 }: ExpenseFormProps) => {
+
   const [form, setForm] = useState({
-    amount: '',
-    date: '',
-    description: '',
+    amount: defaultValues?.amount.toString() || '',
+    date: defaultValues?.date.toISOString().slice(0, 10) ||'',
+    description: defaultValues?.description || '',
   });
 
   const fieldChangedHandler = (field: string, value: string) => {
@@ -55,6 +59,7 @@ export const ExpenseForm = ({
     }));
   };
 
+  const expensesContext = useContext(ExpensesContext);
   const submitHandler = () => {
     console.log('submit - not implemented');
     const expenseData = {
@@ -62,11 +67,12 @@ export const ExpenseForm = ({
       date: new Date(form.date),
       description: form.description,
     };
-    if (isEditing) {
-      // expensesContext.editExpense(editedExpenseId!);
-    } else {
-      // expensesContext.addExpense();
-    }
+    // if (isEditing) {
+    //   const id = route.params?.id;
+    //   expensesContext.updateExpense(editedExpenseId!);
+    // } else {
+    //   expensesContext.addExpense(expenseData);
+    // }
     onSubmit(expenseData);
     // navigation.goBack();
   };

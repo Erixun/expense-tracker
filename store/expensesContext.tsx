@@ -58,13 +58,14 @@ const DUMMY_EXPENSES: Expense[] = [
 ];
 
 type Expense = {
+  //symbol iterator method:
   id: string;
   description: string;
   amount: number;
   date: Date;
 };
 
-type FreshExpense = Omit<Expense, 'id'>;
+export type FreshExpense = Omit<Expense, 'id'>;
 
 export const ExpensesContext = createContext({
   expenses: new Array<Expense>(),
@@ -77,10 +78,10 @@ export const ExpensesContext = createContext({
 function expensesReducer(state: Expense[], action: any): Expense[] {
   switch (action.type) {
     case 'ADD':
-      // const id = new Date().toString() + Math.random().toString();
+      const id = new Date().toString() + Math.random().toString();
       // return [{ ...action.payload, id: id }, ...state];
-      return [{ ...action.payload }, ...state];
-      case 'SET':
+      return [{ ...action.payload, id: id }, ...state];
+    case 'SET':
       const invertedExpenses = [...action.payload].reverse();
       return invertedExpenses;
     case 'UPDATE':
@@ -100,7 +101,7 @@ function expensesReducer(state: Expense[], action: any): Expense[] {
 }
 
 function ExpensesContextProvider({ children }: { children: JSX.Element }) {
-  const [expensesState, dispatch] = useReducer(expensesReducer, [])//DUMMY_EXPENSES);
+  const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
 
   function addExpense(expenseData: FreshExpense) {
     dispatch({ type: 'ADD', payload: expenseData });

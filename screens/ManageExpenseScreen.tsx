@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ViewStyle, TextStyle } from 'react-native';
-import { ExpensesContext } from '../store/expensesContext';
+import { ExpensesContext, FreshExpense } from '../store/expensesContext';
 import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '../navigators/AppNavigation';
@@ -19,8 +19,11 @@ export const ManageExpenseScreen = ({
 }: ManageExpenseScreenProps) => {
   const expensesContext = useContext(ExpensesContext);
 
-  const editedExpenseId = route.params.editedExpenseId;
+  const editedExpenseId = route.params?.editedExpenseId;
   const isEditing = !!editedExpenseId;
+
+  const defaultValues = isEditing? expensesContext.expenses.find((expense) => expense.id === editedExpenseId) : undefined;
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,13 +35,13 @@ export const ManageExpenseScreen = ({
     navigation.goBack();
   };
 
-  const submitHandler = (data: Partial<Expense>) => {
+  const submitHandler = (data: FreshExpense) => {
     console.log('submit - not implemented');
-    console.log('intend to submit: ', data)
+    console.log('intend to submit: ', data);
     if (isEditing) {
-      // expensesContext.editExpense(editedExpenseId!, data);
+      expensesContext.updateExpense({ id: editedExpenseId, ...data });
     } else {
-      // expensesContext.addExpense(data);
+      expensesContext.addExpense(data);
     }
     navigation.goBack();
   };
@@ -51,6 +54,7 @@ export const ManageExpenseScreen = ({
         onSubmit={submitHandler}
         isEditing={isEditing}
         navigation={navigation}
+        defaultValues={defaultValues}
       />
       {/* <View style={$buttonGroup}>
         <Pressable

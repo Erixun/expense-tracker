@@ -31,11 +31,12 @@ const DUMMY_EXPENSES: Expense[] = [
 ];
 
 type ExpensesOutputProps = {
+  expenses: Expense[];
   expensesPeriod: string;
 };
 
-const ExpensesOutput = ({ expensesPeriod }: ExpensesOutputProps) => {
-  const expenses = DUMMY_EXPENSES; //TODO: replace with real data
+const ExpensesOutput = ({ expenses, expensesPeriod }: ExpensesOutputProps) => {
+  // const expenses = DUMMY_EXPENSES; //TODO: replace with real data
   return (
     <View style={{ flex: 1, gap: 5, marginVertical: 10 }}>
       <ExpensesSummary periodName={expensesPeriod} expenses={expenses} />

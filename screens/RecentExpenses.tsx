@@ -10,16 +10,17 @@ export const RecentExpenses = () => {
   // const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getExpenses = async () => {
-    const expenses = await fetchExpenses();
-    // setExpenses(expenses);
-    expensesCtx.setExpenses(expenses);
-    setIsLoading(false);
-  };
+  //TODO: proper fetch from firebase
+  // const getExpenses = async () => {
+  //   const expenses = await fetchExpenses();
+  //   // setExpenses(expenses);
+  //   expensesCtx.setExpenses(expenses);
+  //   setIsLoading(false);
+  // };
 
-  useEffect(() => {
-    getExpenses();
-  }, []);
+  // useEffect(() => {
+  //   getExpenses();
+  // }, []);
 
   const recentExpenses = expensesCtx.expenses.filter(
     (expense) => expense.date > getDateDaysAgo(7)
@@ -30,7 +31,7 @@ export const RecentExpenses = () => {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <ExpensesOutput expensesPeriod="the last 7 days" />
+        <ExpensesOutput expenses={recentExpenses} expensesPeriod="the last 7 days" />
       )}
     </View>
   );

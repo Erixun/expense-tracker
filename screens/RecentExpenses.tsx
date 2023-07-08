@@ -10,17 +10,17 @@ export const RecentExpenses = () => {
   // const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  //TODO: proper fetch from firebase
-  // const getExpenses = async () => {
-  //   const expenses = await fetchExpenses();
-  //   // setExpenses(expenses);
-  //   expensesCtx.setExpenses(expenses);
-  //   setIsLoading(false);
-  // };
+  // TODO: proper fetch from firebase
+  const getExpenses = async () => {
+    const expenses = await fetchExpenses();
+    // setExpenses(expenses);
+    expensesCtx.setExpenses(expenses);
+    setIsLoading(false);
+  };
 
-  // useEffect(() => {
-  //   getExpenses();
-  // }, []);
+  useEffect(() => {
+    getExpenses();
+  }, []);
 
   const recentExpenses = expensesCtx.expenses.filter(
     (expense) => expense.date > getDateDaysAgo(7)

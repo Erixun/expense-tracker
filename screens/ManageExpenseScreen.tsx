@@ -1,10 +1,11 @@
 import { View, Text, Pressable, ViewStyle, TextStyle } from 'react-native';
-import { ExpensesContext } from '../store/expensesContext';
+import { ExpensesContext, FreshExpense } from '../store/expensesContext';
 import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '../navigators/AppNavigation';
 import { ExpenseForm } from '../components/ManageExpense/ExpenseForm';
 import Expense from '../types/Expense';
+import { storeExpense } from '../utils/http';
 
 export type ManageExpenseScreenProps = NativeStackScreenProps<
   AppStackParams,
@@ -32,12 +33,13 @@ export const ManageExpenseScreen = ({
     navigation.goBack();
   };
 
-  const submitHandler = (data: Partial<Expense>) => {
+  const submitHandler = (data: FreshExpense) => {
     console.log('submit - not implemented');
     console.log('intend to submit: ', data)
     if (isEditing) {
       // expensesContext.editExpense(editedExpenseId!, data);
     } else {
+      storeExpense(data)
       // expensesContext.addExpense(data);
     }
     navigation.goBack();

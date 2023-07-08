@@ -64,7 +64,7 @@ type Expense = {
   date: Date;
 };
 
-type FreshExpense = Omit<Expense, 'id'>;
+export type FreshExpense = Omit<Expense, 'id'>;
 
 export const ExpensesContext = createContext({
   expenses: new Array<Expense>(),

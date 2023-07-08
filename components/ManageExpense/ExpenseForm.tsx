@@ -4,13 +4,14 @@ import { Input } from './Input';
 import { palette } from '../../theme/colors';
 import { ExpenseNavigation } from '../../screens';
 import Expense from '../../types/Expense';
+import { FreshExpense } from '../../store/expensesContext';
 
 type FieldKey = 'amount' | 'date' | 'description';
 
 type ExpenseFormProps = {
   isEditing: boolean;
   onCancel: () => void;
-  onSubmit: (data: Partial<Expense>) => void;
+  onSubmit: (data: FreshExpense) => void;
   submitButtonLabel: string;
 } & ExpenseNavigation;
 

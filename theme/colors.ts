@@ -13,8 +13,8 @@ export const palette = {
     dark: '#9a0007',
   },
   background: {
-    default: '#fff',
-    paper: '#fff',
+    default: '#ffffff',
+    paper: '#ffffff',
   },
   shadow: {
     default: 'rgba(0, 0, 0, 0.2)',

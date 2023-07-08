@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native';
 import Expense from '../../types/Expense';
+import { palette } from '../../theme/colors';
 
 interface ExpensesSummaryProps {
   expenses: Expense[];
@@ -12,8 +13,8 @@ const ExpensesSummary = ({ expenses, periodName }: ExpensesSummaryProps) => {
   }, 0);
 
   return (
-    <View>
-      <Text>
+    <View style={{padding: 20, backgroundColor: palette.primary.dark, }}>
+      <Text style={{color: "white", fontSize: 16}}>
         Total: {totalAmount.toFixed(2)} kr for {periodName}
       </Text>
     </View>

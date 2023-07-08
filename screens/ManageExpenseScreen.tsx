@@ -1,4 +1,11 @@
-import { View, Text, Pressable, ViewStyle, TextStyle } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  ViewStyle,
+  TextStyle,
+  Alert,
+} from 'react-native';
 import { ExpensesContext, FreshExpense } from '../store/expensesContext';
 import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,8 +29,9 @@ export const ManageExpenseScreen = ({
   const editedExpenseId = route.params?.editedExpenseId;
   const isEditing = !!editedExpenseId;
 
-  const defaultValues = isEditing? expensesContext.expenses.find((expense) => expense.id === editedExpenseId) : undefined;
-
+  const defaultValues = isEditing
+    ? expensesContext.expenses.find((expense) => expense.id === editedExpenseId)
+    : undefined;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -46,12 +54,28 @@ export const ManageExpenseScreen = ({
     navigation.goBack();
   };
 
+  const deleteHandler = () => {
+    if (!editedExpenseId) return;
+    Alert.alert('Are you sure?', 'Do you really want to delete this expense?', [
+      { text: 'No', style: 'default' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: () => {
+          expensesContext.deleteExpense(editedExpenseId);
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={$container}>
       <ExpenseForm
         submitButtonLabel={isEditing ? 'Update' : 'Save'}
         onCancel={cancelHandler}
         onSubmit={submitHandler}
+        onDelete={deleteHandler}
         isEditing={isEditing}
         navigation={navigation}
         defaultValues={defaultValues}

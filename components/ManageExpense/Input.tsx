@@ -5,17 +5,39 @@ type InputProps = {
   label: string;
   textInputConfig: TextInputProps;
   containerStyle?: ViewStyle;
+  isValid: boolean;
 };
 
-export const Input = ({ label, textInputConfig, containerStyle }: InputProps) => {
+export const Input = ({
+  label,
+  textInputConfig,
+  containerStyle,
+  isValid,
+}: InputProps) => {
   const inputStyles = [$textInput];
   if (textInputConfig.multiline) {
     inputStyles.push($textInputMultiline);
   }
+
+  if (!isValid) inputStyles.push({ borderColor: 'red', backgroundColor: '#fbd7d7' });
+
+  const error = (
+    <Text style={{ color: 'red', marginTop: -5, marginBottom: 5, marginHorizontal: 10, fontStyle: 'italic' }}>
+      {!isValid && !textInputConfig?.value
+        ? 'Cannot be empty'
+        : !isValid
+        ? 'Invalid input'
+        : null}
+    </Text>
+  );
+  {
+    /* </Text> : !isValid? <Text style={{ color: 'red' }}>Invalid value</Text> : null; */
+  }
   return (
     <View style={[$inputContainer, containerStyle]}>
       <Text style={$label}>{label}</Text>
-      <TextInput style={inputStyles} {...textInputConfig} />
+      <TextInput style={[inputStyles]} {...textInputConfig} />
+      {error}
     </View>
   );
 };

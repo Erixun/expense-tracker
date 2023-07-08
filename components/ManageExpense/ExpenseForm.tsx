@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, ViewStyle, Text, TextStyle, Pressable } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, ViewStyle, Text, TextStyle, Pressable, Alert } from 'react-native';
 import { Input } from './Input';
 import { palette } from '../../theme/colors';
 import { ExpenseNavigation } from '../../screens';
 import Expense from '../../types/Expense';
-import { FreshExpense } from '../../store/expensesContext';
+import { ExpensesContext, FreshExpense } from '../../store/expensesContext';
 
 type FieldKey = 'amount' | 'date' | 'description';
 
@@ -12,65 +12,196 @@ type ExpenseFormProps = {
   isEditing: boolean;
   onCancel: () => void;
   onSubmit: (data: FreshExpense) => void;
+  onDelete: () => void;
   submitButtonLabel: string;
+  defaultValues?: FreshExpense;
 } & ExpenseNavigation;
 
+const ErrorMessage = {
+  required: 'This field is required',
+  invalidDateFormat: 'Invalid date format',
+  invalidAmount: 'Invalid amount, must be a number greater than 0',
+  invalidDescription: 'Invalid description, cannot be empty',
+};
+
+type ExpenseFormState = {
+  amount: FormField;
+  date: FormField;
+  description: FormField;
+};
+
+type FormField = {
+  value: string;
+  isValid: boolean;
+};
 export const ExpenseForm = ({
   navigation,
   isEditing,
   onCancel,
   onSubmit,
+  onDelete,
   submitButtonLabel,
+  defaultValues,
 }: ExpenseFormProps) => {
-  const [form, setForm] = useState({
-    amount: '',
-    date: '',
-    description: '',
+  const [form, setForm] = useState<ExpenseFormState>({
+    amount: { value: defaultValues?.amount.toString() || '', isValid: true },
+    date: {
+      value: defaultValues?.date.toISOString().slice(0, 10) || '',
+      isValid: true,
+    },
+    description: { value: defaultValues?.description || '', isValid: true },
   });
 
   const fieldChangedHandler = (field: string, value: string) => {
     setForm((prevState) => ({
       ...prevState,
-      [field]: value,
+      [field]: { value, isValid: true },
     }));
   };
 
-  const amountChangedHandler = (text: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      amount: text,
-    }));
+  // const amountChangedHandler = (text: string) => {
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     amount: text,
+  //   }));
+  // };
+
+  // const dateChangedHandler = (text: string) => {
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     date: text,
+  //   }));
+  // };
+
+  // const descriptionChangedHandler = (text: string) => {
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     description: text,
+  //   }));
+  // };
+
+  const isValidSubmission = () => {
+    return Object.values(form).every((field) => field.isValid);
   };
 
-  const dateChangedHandler = (text: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      date: text,
-    }));
-  };
-
-  const descriptionChangedHandler = (text: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      description: text,
-    }));
-  };
-
-  const submitHandler = () => {
+  const expensesContext = useContext(ExpensesContext);
+  const submitHandler = async () => {
     console.log('submit - not implemented');
-    const expenseData = {
-      amount: +form.amount,
-      date: new Date(form.date),
-      description: form.description,
+    const expenseData: FreshExpense = {
+      amount: +form.amount.value,
+      date: new Date(form.date.value),
+      description: form.description.value,
     };
-    if (isEditing) {
-      // expensesContext.editExpense(editedExpenseId!);
-    } else {
-      // expensesContext.addExpense();
-    }
-    onSubmit(expenseData);
+    // const isAmountValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
+    // const isDateValid = expenseData.date.toString() !== 'Invalid Date'
+    // const isDescriptionValid = expenseData.description.trim().length > 0;
+
+    // if (!isAmountValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     amount: { value: prevState.amount.value, isValid: false },
+    //   }));
+    // }
+    // if (!isDateValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     date: { value: prevState.date.value, isValid: false },
+    //   }));
+    // }
+    // if (!isDescriptionValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     description: {
+    //       value: prevState.description.value,
+    //       isValid: false,
+    //     },
+    //   }));
+    // }
+
+    // if (isEditing) {
+    //   const id = route.params?.id;
+    //   expensesContext.updateExpense(editedExpenseId!);
+    // } else {
+    //   expensesContext.addExpense(expenseData);
+    // }
+    doFormValidation(form)
+      .then(onSubmit)
+      .catch((err) => {
+        console.log('err', err);
+      });
+    // onSubmit(expenseData);
     // navigation.goBack();
   };
+
+  useEffect(() => {
+    setIsFormValid(isValidSubmission());
+  }, [form]);
+
+  const [isFormValid, setIsFormValid] = useState(true);
+
+  const doFormValidation = async (
+    data: ExpenseFormState
+  ): Promise<FreshExpense> => {
+    const amount = +data.amount.value;
+    const isAmountValid = !isNaN(amount) && amount > 0;
+    //regex valid date format yyyy-mm-dd:
+    // const dateString = data.date.value.toLocaleString('sv-SE', {
+    //   year: 'numeric',
+    //   month: '2-digit',
+    //   day: '2-digit',
+    // });
+    console.log('dateString', data.date.value);
+    const dateString = data.date.value;
+    const date = new Date(dateString);
+    const isDateValid =
+      date.toString() !== 'Invalid Date' &&
+      /\d{4}-\d{2}-\d{2}/.test(dateString);
+    // const isDateValid = expenseData.date.toString() !== 'Invalid Date' && \\d{4}-{\;
+    const description = data.description.value;
+    const isDescriptionValid = description.trim().length > 0;
+
+    if (!isAmountValid || !isDateValid || !isDescriptionValid) {
+      setForm((prevState) => ({
+        ...prevState,
+        amount: { value: prevState.amount.value, isValid: isAmountValid },
+        date: { value: prevState.date.value, isValid: isDateValid },
+        description: {
+          value: prevState.description.value,
+          isValid: isDescriptionValid,
+        },
+      }));
+      setIsFormValid(false);
+      throw new Error('Invalid form data');
+    }
+
+    return {
+      amount,
+      date,
+      description,
+    };
+    // if (!isAmountValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     amount: { value: prevState.amount.value, isValid: false },
+    //   }));
+    // }
+    // if (!isDateValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     date: { value: prevState.date.value, isValid: false },
+    //   }));
+    // }
+    // if (!isDescriptionValid) {
+    //   setForm((prevState) => ({
+    //     ...prevState,
+    //     description: {
+    //       value: prevState.description.value,
+    //       isValid: false,
+    //     },
+    //   }));
+    // }
+  };
+  // const errStyle = { color: 'red' };
 
   return (
     <View style={$form}>
@@ -81,9 +212,10 @@ export const ExpenseForm = ({
           textInputConfig={{
             keyboardType: 'numeric',
             onChangeText: fieldChangedHandler.bind(this, 'amount'),
-            value: form.amount,
+            value: form.amount.value,
           }}
           containerStyle={$rowInput}
+          isValid={form.amount.isValid}
         />
         <Input
           label="Date"
@@ -92,8 +224,9 @@ export const ExpenseForm = ({
             placeholder: 'YYYY-MM-DD',
             maxLength: 10,
             onChangeText: fieldChangedHandler.bind(this, 'date'),
-            value: form.date,
+            value: form.date.value,
           }}
+          isValid={form.date.isValid}
           containerStyle={$rowInput}
         />
       </View>
@@ -102,11 +235,15 @@ export const ExpenseForm = ({
         textInputConfig={{
           multiline: true,
           onChangeText: fieldChangedHandler.bind(this, 'description'),
-          value: form.description,
+          value: form.description.value,
           // numberOfLines: 4,
           // autoCapitalize: 'sentences',
           // autoCorrect: true,
+          // style: {
+          //   color: form.description.isValid ? 'black' : 'red',
+          // }
         }}
+        isValid={form.description.isValid}
       />
       <View style={$buttonGroup}>
         <Pressable
@@ -126,6 +263,21 @@ export const ExpenseForm = ({
           </Text>
         </Pressable>
       </View>
+      {isEditing && (
+        <Pressable
+          android_ripple={{ color: 'red' }}
+          style={[
+            $button,
+            { backgroundColor: 'red', alignSelf: 'center', marginVertical: 20 },
+          ]}
+          onPress={() => {
+            onDelete();
+          }}
+        >
+          <Text style={[$btnText, { color: 'white' }]}>Delete</Text>
+          {/* <Ionicon name="trash" size={30} color="red" /> */}
+        </Pressable>
+      )}
     </View>
   );
 };

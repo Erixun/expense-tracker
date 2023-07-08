@@ -1,10 +1,9 @@
-import { View, Text, Pressable, ViewStyle, TextStyle } from 'react-native';
+import { View, ViewStyle, Alert } from 'react-native';
 import { ExpensesContext, FreshExpense } from '../store/expensesContext';
 import { useContext, useLayoutEffect } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '../navigators/AppNavigation';
 import { ExpenseForm } from '../components/ManageExpense/ExpenseForm';
-import Expense from '../types/Expense';
 import { storeExpense } from '../utils/http';
 
 export type ManageExpenseScreenProps = NativeStackScreenProps<
@@ -20,8 +19,12 @@ export const ManageExpenseScreen = ({
 }: ManageExpenseScreenProps) => {
   const expensesContext = useContext(ExpensesContext);
 
-  const editedExpenseId = route.params.editedExpenseId;
+  const editedExpenseId = route.params?.editedExpenseId;
   const isEditing = !!editedExpenseId;
+
+  const defaultValues = isEditing
+    ? expensesContext.expenses.find((expense) => expense.id === editedExpenseId)
+    : undefined;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,14 +38,29 @@ export const ManageExpenseScreen = ({
 
   const submitHandler = (data: FreshExpense) => {
     console.log('submit - not implemented');
-    console.log('intend to submit: ', data)
+    console.log('intend to submit: ', data);
     if (isEditing) {
-      // expensesContext.editExpense(editedExpenseId!, data);
+      expensesContext.updateExpense({ id: editedExpenseId, ...data });
     } else {
-      storeExpense(data)
+      storeExpense(data);
       // expensesContext.addExpense(data);
     }
     navigation.goBack();
+  };
+
+  const deleteHandler = () => {
+    if (!editedExpenseId) return;
+    Alert.alert('Are you sure?', 'Do you really want to delete this expense?', [
+      { text: 'No', style: 'default' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: () => {
+          expensesContext.deleteExpense(editedExpenseId);
+          navigation.goBack();
+        },
+      },
+    ]);
   };
 
   return (
@@ -51,8 +69,10 @@ export const ManageExpenseScreen = ({
         submitButtonLabel={isEditing ? 'Update' : 'Save'}
         onCancel={cancelHandler}
         onSubmit={submitHandler}
+        onDelete={deleteHandler}
         isEditing={isEditing}
         navigation={navigation}
+        defaultValues={defaultValues}
       />
       {/* <View style={$buttonGroup}>
         <Pressable

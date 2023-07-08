@@ -3,6 +3,7 @@ export const palette = {
     main: '#1976d2',
     dark: '#004ba0',
   },
+
   secondary: {
     main: '#dc004e',
     dark: '#9a0036',
@@ -12,8 +13,12 @@ export const palette = {
     dark: '#9a0007',
   },
   background: {
-    default: '#fff',
-    paper: '#fff',
+    default: '#ffffff',
+    paper: '#ffffff',
+  },
+  shadow: {
+    default: 'rgba(0, 0, 0, 0.2)',
+    dark: 'rgba(0, 0, 0, 0.4)',
   },
   text: {
     primary: '#212121',

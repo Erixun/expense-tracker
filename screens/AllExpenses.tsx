@@ -34,7 +34,9 @@ export const AllExpenses = () => {
   //   getExpenses();
   // }, []);
 
-  const allExpenses = expenseseCtx.expenses;
+  const allExpenses = expenseseCtx.expenses.sort((a, b) => {
+    return a.date > b.date ? 1 : -1;
+  });
 
   return (
     <View style={$container}>

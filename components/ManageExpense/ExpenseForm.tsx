@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, ViewStyle, Text, TextStyle, Pressable, Alert } from 'react-native';
+import {
+  View,
+  ViewStyle,
+  Text,
+  TextStyle,
+  Pressable,
+  Alert,
+} from 'react-native';
 import { Input } from './Input';
 import { palette } from '../../theme/colors';
 import { ExpenseNavigation } from '../../screens';
@@ -86,51 +93,18 @@ export const ExpenseForm = ({
 
   const expensesContext = useContext(ExpensesContext);
   const submitHandler = async () => {
-    console.log('submit - not implemented');
-    const expenseData: FreshExpense = {
-      amount: +form.amount.value,
-      date: new Date(form.date.value),
-      description: form.description.value,
-    };
-    // const isAmountValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
-    // const isDateValid = expenseData.date.toString() !== 'Invalid Date'
-    // const isDescriptionValid = expenseData.description.trim().length > 0;
+    // const expenseData: FreshExpense = {
+    //   amount: +form.amount.value,
+    //   date: new Date(form.date.value),
+    //   description: form.description.value,
+    // };
 
-    // if (!isAmountValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     amount: { value: prevState.amount.value, isValid: false },
-    //   }));
-    // }
-    // if (!isDateValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     date: { value: prevState.date.value, isValid: false },
-    //   }));
-    // }
-    // if (!isDescriptionValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     description: {
-    //       value: prevState.description.value,
-    //       isValid: false,
-    //     },
-    //   }));
-    // }
-
-    // if (isEditing) {
-    //   const id = route.params?.id;
-    //   expensesContext.updateExpense(editedExpenseId!);
-    // } else {
-    //   expensesContext.addExpense(expenseData);
-    // }
-    doFormValidation(form)
-      .then(onSubmit)
-      .catch((err) => {
-        console.log('err', err);
-      });
-    // onSubmit(expenseData);
-    // navigation.goBack();
+    const validExpense = await doFormValidation(form);
+    try {
+      onSubmit(validExpense);
+    } catch (error) {
+      console.log('err', error);
+    }
   };
 
   useEffect(() => {
@@ -144,19 +118,12 @@ export const ExpenseForm = ({
   ): Promise<FreshExpense> => {
     const amount = +data.amount.value;
     const isAmountValid = !isNaN(amount) && amount > 0;
-    //regex valid date format yyyy-mm-dd:
-    // const dateString = data.date.value.toLocaleString('sv-SE', {
-    //   year: 'numeric',
-    //   month: '2-digit',
-    //   day: '2-digit',
-    // });
-    console.log('dateString', data.date.value);
+
     const dateString = data.date.value;
     const date = new Date(dateString);
     const isDateValid =
       date.toString() !== 'Invalid Date' &&
       /\d{4}-\d{2}-\d{2}/.test(dateString);
-    // const isDateValid = expenseData.date.toString() !== 'Invalid Date' && \\d{4}-{\;
     const description = data.description.value;
     const isDescriptionValid = description.trim().length > 0;
 
@@ -179,29 +146,7 @@ export const ExpenseForm = ({
       date,
       description,
     };
-    // if (!isAmountValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     amount: { value: prevState.amount.value, isValid: false },
-    //   }));
-    // }
-    // if (!isDateValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     date: { value: prevState.date.value, isValid: false },
-    //   }));
-    // }
-    // if (!isDescriptionValid) {
-    //   setForm((prevState) => ({
-    //     ...prevState,
-    //     description: {
-    //       value: prevState.description.value,
-    //       isValid: false,
-    //     },
-    //   }));
-    // }
   };
-  // const errStyle = { color: 'red' };
 
   return (
     <View style={$form}>

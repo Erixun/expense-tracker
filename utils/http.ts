@@ -34,3 +34,12 @@ export const fetchExpenses = async () => {
 
   return expenses;
 };
+
+export const updateExpense = async (id: string, expenseData: FreshExpense) => {
+  await axios.put(`${API_URL}/expenses/${id}.json`, expenseData);
+  return { id, ...expenseData } as Expense;
+};
+
+export const deleteExpense = (id: string) => {
+  return axios.delete(`${API_URL}/expenses/${id}.json`);
+};

@@ -69,7 +69,7 @@ export type FreshExpense = Omit<Expense, 'id'>;
 
 export const ExpensesContext = createContext({
   expenses: new Array<Expense>(),
-  addExpense: ({ description, amount, date }: FreshExpense) => {},
+  addExpense: ({ description, amount, date, id }: Expense) => {},
   setExpenses: (expenses: Expense[]) => {},
   deleteExpense: (id: string) => {},
   updateExpense: ({ id, description, amount, date }: Expense) => {},

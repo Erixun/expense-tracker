@@ -4,16 +4,14 @@ import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 import { fetchExpenses } from '../utils/http';
 import Expense from '../types/Expense';
 import { ExpensesContext } from '../store/expensesContext';
+import { LoadingOverlay } from '../components/LoadingOverlay';
 
 export const RecentExpenses = () => {
   const expensesCtx = useContext(ExpensesContext);
-  // const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // TODO: proper fetch from firebase
   const getExpenses = async () => {
     const expenses = await fetchExpenses();
-    // setExpenses(expenses);
     expensesCtx.setExpenses(expenses);
     setIsLoading(false);
   };
@@ -26,13 +24,14 @@ export const RecentExpenses = () => {
     (expense) => expense.date > getDateDaysAgo(7)
   );
 
+  if (isLoading) return <LoadingOverlay />;
+
   return (
     <View style={$container}>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <ExpensesOutput expenses={recentExpenses} expensesPeriod="the last 7 days" />
-      )}
+      <ExpensesOutput
+        expenses={recentExpenses}
+        expensesPeriod="the last 7 days"
+      />
     </View>
   );
 };

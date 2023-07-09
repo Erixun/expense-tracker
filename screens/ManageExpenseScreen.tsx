@@ -1,10 +1,11 @@
 import { View, ViewStyle, Alert } from 'react-native';
 import { ExpensesContext, FreshExpense } from '../store/expensesContext';
-import { useContext, useLayoutEffect } from 'react';
+import { useContext, useLayoutEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '../navigators/AppNavigation';
 import { ExpenseForm } from '../components/ManageExpense/ExpenseForm';
-import { storeExpense } from '../utils/http';
+import { deleteExpense, storeExpense, updateExpense } from '../utils/http';
+import { LoadingOverlay } from '../components/LoadingOverlay';
 
 export type ManageExpenseScreenProps = NativeStackScreenProps<
   AppStackParams,
@@ -36,26 +37,28 @@ export const ManageExpenseScreen = ({
     navigation.goBack();
   };
 
-  const submitHandler = (data: FreshExpense) => {
-    console.log('submit - not implemented');
-    console.log('intend to submit: ', data);
+  const submitExpenseHandler = async (data: FreshExpense) => {
+    setIsSubmitting(true);
     if (isEditing) {
+      await updateExpense(editedExpenseId, data);
       expensesContext.updateExpense({ id: editedExpenseId, ...data });
     } else {
-      storeExpense(data);
-      // expensesContext.addExpense(data);
+      const id = await storeExpense(data);
+      expensesContext.addExpense({ ...data, id: id });
     }
     navigation.goBack();
   };
 
-  const deleteHandler = () => {
+  const deleteExpenseHandler = () => {
     if (!editedExpenseId) return;
+    setIsSubmitting(true);
     Alert.alert('Are you sure?', 'Do you really want to delete this expense?', [
       { text: 'No', style: 'default' },
       {
         text: 'Yes',
         style: 'destructive',
-        onPress: () => {
+        onPress: async () => {
+          await deleteExpense(editedExpenseId);
           expensesContext.deleteExpense(editedExpenseId);
           navigation.goBack();
         },
@@ -63,41 +66,21 @@ export const ManageExpenseScreen = ({
     ]);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (isSubmitting) return <LoadingOverlay />;
+
   return (
     <View style={$container}>
       <ExpenseForm
         submitButtonLabel={isEditing ? 'Update' : 'Save'}
         onCancel={cancelHandler}
-        onSubmit={submitHandler}
-        onDelete={deleteHandler}
+        onSubmit={submitExpenseHandler}
+        onDelete={deleteExpenseHandler}
         isEditing={isEditing}
         navigation={navigation}
         defaultValues={defaultValues}
       />
-      {/* <View style={$buttonGroup}>
-        <Pressable
-          android_ripple={{ color: 'grey' }}
-          style={[$button]}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={$btnText}>Cancel</Text>
-        </Pressable>
-        <Pressable
-          android_ripple={{ color: 'green' }}
-          style={[$button, { backgroundColor: palette.primary.main }]}
-          onPress={() => {
-            console.log('save - not implemented');
-            if (isEditing) {
-              // expensesContext.editExpense(editedExpenseId!);
-            } else {
-              // expensesContext.addExpense();
-            }
-            navigation.goBack();
-          }}
-        >
-          <Text style={[$btnText, { color: 'white' }]}>Save</Text>
-        </Pressable>
-      </View> */}
     </View>
   );
 };

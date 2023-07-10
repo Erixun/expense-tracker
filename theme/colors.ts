@@ -3,10 +3,13 @@ export const palette = {
     main: '#1976d2',
     dark: '#004ba0',
   },
-
   secondary: {
     main: '#dc004e',
     dark: '#9a0036',
+  },
+  neutral: {
+    main: '#ffffff',
+    dark: '#d1d1d1',
   },
   error: {
     main: '#d32f2f',

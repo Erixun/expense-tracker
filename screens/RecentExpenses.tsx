@@ -5,26 +5,45 @@ import { fetchExpenses } from '../utils/http';
 import Expense from '../types/Expense';
 import { ExpensesContext } from '../store/expensesContext';
 import { LoadingOverlay } from '../components/LoadingOverlay';
+import { ErrorOverlay } from '../components/ErrorOverlay';
+import { AxiosError } from 'axios';
 
 export const RecentExpenses = () => {
   const expensesCtx = useContext(ExpensesContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState('');
 
-  const getExpenses = async () => {
-    const expenses = await fetchExpenses();
-    expensesCtx.setExpenses(expenses);
-    setIsLoading(false);
+  const toMessage = (error: AxiosError) => {
+    setError(error.message);
   };
+  const getExpenses = async () => {
+    fetchExpenses()
+      .then(expensesCtx.setExpenses)
+      .catch(toMessage)
+      .finally(() => {
+        setIsFetching(false);
+      });
+    // setIsLoading(false);
+  };
+  // const expenses = await fetchExpenses();
+  // expensesCtx.setExpenses(expenses);
+  // setIsLoading(false);
+  // };
 
   useEffect(() => {
     getExpenses();
   }, []);
 
+  const clearError = () => {
+    setError('');
+  };
+
   const recentExpenses = expensesCtx.expenses.filter(
     (expense) => expense.date > getDateDaysAgo(7)
   );
 
-  if (isLoading) return <LoadingOverlay />;
+  if (isFetching) return <LoadingOverlay />;
+  if (error) return <ErrorOverlay message={error} onConfirm={clearError} />;
 
   return (
     <View style={$container}>

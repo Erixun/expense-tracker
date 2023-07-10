@@ -7,6 +7,7 @@ const API_URL =
   'https://react-native-course-defe9-default-rtdb.europe-west1.firebasedatabase.app';
 export const storeExpense = async (expense: FreshExpense) => {
   const response = await axios.post(`${API_URL}/expenses.json`, expense);
+  console.log(response.data)
   const id = response.data.name;
   return id;
 };

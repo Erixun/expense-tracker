@@ -6,6 +6,8 @@ import { AppStackParams } from '../navigators/AppNavigation';
 import { ExpenseForm } from '../components/ManageExpense/ExpenseForm';
 import { deleteExpense, storeExpense, updateExpense } from '../utils/http';
 import { LoadingOverlay } from '../components/LoadingOverlay';
+import { ErrorOverlay } from '../components/ErrorOverlay';
+import { AxiosError } from 'axios';
 
 export type ManageExpenseScreenProps = NativeStackScreenProps<
   AppStackParams,
@@ -38,17 +40,35 @@ export const ManageExpenseScreen = ({
   };
 
   const submitExpenseHandler = async (data: FreshExpense) => {
+    console.log('submitExpenseHandler');
     setIsSubmitting(true);
-    if (isEditing) {
-      await updateExpense(editedExpenseId, data);
-      expensesContext.updateExpense({ id: editedExpenseId, ...data });
-    } else {
-      const id = await storeExpense(data);
-      expensesContext.addExpense({ ...data, id: id });
+    try {
+      if (isEditing) {
+        await updateExpense(editedExpenseId, data);
+        expensesContext.updateExpense({ id: editedExpenseId, ...data });
+      } else {
+        const id = await storeExpense(data);
+        expensesContext.addExpense({ ...data, id: id });
+      }
+      navigation.goBack();
+    } catch (err) {
+      console.log('err', err);
+      return handleError(err);
     }
+  };
+
+  const errorConfirmedHandler = () => {
+    setError('');
     navigation.goBack();
   };
 
+  const handleError = (err: AxiosError | unknown) => {
+    setIsSubmitting(false);
+    if (err instanceof AxiosError) {
+      return setError(err.message);
+    }
+    setError('Something went wrong');
+  };
   const deleteExpenseHandler = () => {
     if (!editedExpenseId) return;
     setIsSubmitting(true);
@@ -58,16 +78,24 @@ export const ManageExpenseScreen = ({
         text: 'Yes',
         style: 'destructive',
         onPress: async () => {
-          await deleteExpense(editedExpenseId);
-          expensesContext.deleteExpense(editedExpenseId);
-          navigation.goBack();
+          try {
+            await deleteExpense(editedExpenseId);
+            expensesContext.deleteExpense(editedExpenseId);
+            navigation.goBack();
+          } catch (err) {
+            handleError(err);
+          }
+          // await deleteExpense(editedExpenseId);
         },
       },
     ]);
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
+  if (error && !isSubmitting)
+    return <ErrorOverlay message={error} onConfirm={errorConfirmedHandler} />;
   if (isSubmitting) return <LoadingOverlay />;
 
   return (

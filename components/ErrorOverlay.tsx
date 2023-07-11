@@ -30,15 +30,12 @@ const $title: TextStyle = {
 };
 
 const $message: TextStyle = {
-  // color: 'white',
   fontSize: 16,
 };
 
 const $text: TextStyle = {
   textAlign: 'center',
-  // color: 'white',
   color: 'white',
-  // fontSize: 24,
 };
 
 const $button: ViewStyle = {

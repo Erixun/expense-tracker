@@ -1,17 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-// import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as Crypto from 'expo-crypto';
 import { useState, useEffect, useRef } from 'react';
-import {
-  Text,
-  View,
-  Button,
-  Platform,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import AppNavigation from './navigators/AppNavigation';
 import * as SecureStore from 'expo-secure-store';
@@ -103,41 +94,6 @@ export default function App() {
       <ExpensesContextProvider>
         <AppNavigation />
       </ExpensesContextProvider>
-      {/* <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'space-around',
-        }}
-      >
-        <Text>Your device id: {myDeviceId}</Text>
-        <Text>Your expo push token: {expoPushToken}</Text>
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text>
-            Title: {notification && notification.request?.content.title}{' '}
-          </Text>
-          <Text>
-            Body: {notification && notification.request?.content.body}
-          </Text>
-          <Text>
-            Data:{' '}
-            {notification && JSON.stringify(notification.request.content.data)}
-          </Text>
-        </View>
-        <TextInput />
-        <Button
-          title="Push-notify my device"
-          onPress={async () => {
-            await sendPushNotification();
-          }}
-        />
-        <Button
-          title="Press to schedule a notification"
-          onPress={async () => {
-            await schedulePushNotification();
-          }}
-        />
-      </View> */}
     </NavigationContainer>
   );
 }
@@ -168,7 +124,6 @@ async function registerForPushNotificationsAsync() {
   if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
-    console.log(existingStatus);
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -179,19 +134,9 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }
 
   return token;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

@@ -19,10 +19,19 @@ export const Input = ({
     inputStyles.push($textInputMultiline);
   }
 
-  if (!isValid) inputStyles.push({ borderColor: 'red', backgroundColor: '#fbd7d7' });
+  if (!isValid)
+    inputStyles.push({ borderColor: 'red', backgroundColor: '#fbd7d7' });
 
   const error = (
-    <Text style={{ color: 'red', marginTop: -5, marginBottom: 5, marginHorizontal: 10, fontStyle: 'italic' }}>
+    <Text
+      style={{
+        color: 'red',
+        marginTop: -5,
+        marginBottom: 5,
+        marginHorizontal: 10,
+        fontStyle: 'italic',
+      }}
+    >
       {!isValid && !textInputConfig?.value
         ? 'Cannot be empty'
         : !isValid
@@ -30,9 +39,6 @@ export const Input = ({
         : null}
     </Text>
   );
-  {
-    /* </Text> : !isValid? <Text style={{ color: 'red' }}>Invalid value</Text> : null; */
-  }
   return (
     <View style={[$inputContainer, containerStyle]}>
       <Text style={$label}>{label}</Text>
@@ -43,8 +49,6 @@ export const Input = ({
 };
 
 const $inputContainer: ViewStyle = {
-  // borderWidth: 1,
-  // flex: 1,
   marginHorizontal: 10,
   marginVertical: 6,
 };

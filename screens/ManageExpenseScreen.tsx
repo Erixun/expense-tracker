@@ -85,7 +85,6 @@ export const ManageExpenseScreen = ({
           } catch (err) {
             handleError(err);
           }
-          // await deleteExpense(editedExpenseId);
         },
       },
     ]);
@@ -118,24 +117,3 @@ const $container: ViewStyle = {
   justifyContent: 'flex-start',
   padding: 10,
 };
-
-// const $buttonGroup: ViewStyle = {
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   // gap: 10,
-//   width: '100%',
-// };
-
-// const $button: ViewStyle = {
-//   width: '40%',
-//   padding: 10,
-//   borderRadius: 10,
-//   borderWidth: 1,
-//   borderColor: 'black',
-//   alignItems: 'center',
-// };
-
-// const $btnText: TextStyle = {
-//   fontSize: 16,
-//   fontWeight: 'bold',
-// };

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ActivityIndicator, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 import { fetchExpenses } from '../utils/http';
-import Expense from '../types/Expense';
 import { ExpensesContext } from '../store/expensesContext';
 import { LoadingOverlay } from '../components/LoadingOverlay';
 import { ErrorOverlay } from '../components/ErrorOverlay';
@@ -23,12 +22,7 @@ export const RecentExpenses = () => {
       .finally(() => {
         setIsFetching(false);
       });
-    // setIsLoading(false);
   };
-  // const expenses = await fetchExpenses();
-  // expensesCtx.setExpenses(expenses);
-  // setIsLoading(false);
-  // };
 
   useEffect(() => {
     getExpenses();

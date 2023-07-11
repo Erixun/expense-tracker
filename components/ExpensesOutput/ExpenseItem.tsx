@@ -4,10 +4,7 @@ import Expense from '../../types/Expense';
 import { palette } from '../../theme/colors';
 import { AppStackParams } from '../../navigators/AppNavigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-interface ExpenseItemProps {
-  title: string;
-}
+import { getFormattedDate } from '../../utils/getFormattedDate';
 
 type NavigationProp = NativeStackNavigationProp<AppStackParams>;
 
@@ -18,15 +15,6 @@ const ExpenseItem = ({ id, description, amount, date }: Expense) => {
       editedExpenseId: id,
     });
   };
-
-  //TODO: move to utils
-  function getFormattedDate(date: Date) {
-    return date.toLocaleDateString('sv-SE', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  }
 
   return (
     <Pressable

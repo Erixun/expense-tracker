@@ -6,7 +6,6 @@ import {
   TextStyle,
   ButtonProps,
 } from 'react-native';
-import App from '../App';
 import { palette } from '../theme/colors';
 
 export const Button = ({
@@ -42,7 +41,6 @@ export const Button = ({
 };
 
 const $button: ViewStyle = {
-  // backgroundColor: palette.primary.dark,
   paddingHorizontal: 16,
   paddingVertical: 8,
   borderRadius: 8,

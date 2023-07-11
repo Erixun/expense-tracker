@@ -1,7 +1,7 @@
 import { Button, View, Text, ViewStyle } from 'react-native';
 
 export const HomeScreen = () => {
-  const { logout } = { logout: () => console.log('logout') }; //useAuth();
+  const { logout } = { logout: () => console.log('logout') };
 
   return (
     <View style={$container}>

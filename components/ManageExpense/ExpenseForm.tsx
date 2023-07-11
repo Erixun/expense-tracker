@@ -1,19 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  ViewStyle,
-  Text,
-  TextStyle,
-  Pressable,
-  Alert,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, ViewStyle, Text, TextStyle, Pressable } from 'react-native';
 import { Input } from './Input';
 import { palette } from '../../theme/colors';
 import { ExpenseNavigation } from '../../screens';
-import Expense from '../../types/Expense';
-import { ExpensesContext, FreshExpense } from '../../store/expensesContext';
-
-type FieldKey = 'amount' | 'date' | 'description';
+import { FreshExpense } from '../../store/expensesContext';
 
 type ExpenseFormProps = {
   isEditing: boolean;
@@ -24,25 +14,17 @@ type ExpenseFormProps = {
   defaultValues?: FreshExpense;
 } & ExpenseNavigation;
 
-const ErrorMessage = {
-  required: 'This field is required',
-  invalidDateFormat: 'Invalid date format',
-  invalidAmount: 'Invalid amount, must be a number greater than 0',
-  invalidDescription: 'Invalid description, cannot be empty',
+type ExpenseFormState = {
+  [key in FieldKey]: FormField;
 };
 
-type ExpenseFormState = {
-  amount: FormField;
-  date: FormField;
-  description: FormField;
-};
+type FieldKey = 'amount' | 'date' | 'description';
 
 type FormField = {
   value: string;
   isValid: boolean;
 };
 export const ExpenseForm = ({
-  navigation,
   isEditing,
   onCancel,
   onSubmit,
@@ -66,39 +48,7 @@ export const ExpenseForm = ({
     }));
   };
 
-  // const amountChangedHandler = (text: string) => {
-  //   setForm((prevState) => ({
-  //     ...prevState,
-  //     amount: text,
-  //   }));
-  // };
-
-  // const dateChangedHandler = (text: string) => {
-  //   setForm((prevState) => ({
-  //     ...prevState,
-  //     date: text,
-  //   }));
-  // };
-
-  // const descriptionChangedHandler = (text: string) => {
-  //   setForm((prevState) => ({
-  //     ...prevState,
-  //     description: text,
-  //   }));
-  // };
-
-  const isValidSubmission = () => {
-    return Object.values(form).every((field) => field.isValid);
-  };
-
-  const expensesContext = useContext(ExpensesContext);
   const submitHandler = async () => {
-    // const expenseData: FreshExpense = {
-    //   amount: +form.amount.value,
-    //   date: new Date(form.date.value),
-    //   description: form.description.value,
-    // };
-
     const validExpense = await doFormValidation(form);
     try {
       onSubmit(validExpense);
@@ -106,12 +56,6 @@ export const ExpenseForm = ({
       console.log('err', error);
     }
   };
-
-  useEffect(() => {
-    setIsFormValid(isValidSubmission());
-  }, [form]);
-
-  const [isFormValid, setIsFormValid] = useState(true);
 
   const doFormValidation = async (
     data: ExpenseFormState
@@ -137,7 +81,6 @@ export const ExpenseForm = ({
           isValid: isDescriptionValid,
         },
       }));
-      setIsFormValid(false);
       throw new Error('Invalid form data');
     }
 
@@ -165,7 +108,7 @@ export const ExpenseForm = ({
         <Input
           label="Date"
           textInputConfig={{
-            keyboardType: 'numeric', //'numbers-and-punctuation',
+            keyboardType: 'numeric',
             placeholder: 'YYYY-MM-DD',
             maxLength: 10,
             onChangeText: fieldChangedHandler.bind(this, 'date'),
@@ -184,9 +127,6 @@ export const ExpenseForm = ({
           // numberOfLines: 4,
           // autoCapitalize: 'sentences',
           // autoCorrect: true,
-          // style: {
-          //   color: form.description.isValid ? 'black' : 'red',
-          // }
         }}
         isValid={form.description.isValid}
       />
@@ -220,7 +160,6 @@ export const ExpenseForm = ({
           }}
         >
           <Text style={[$btnText, { color: 'white' }]}>Delete</Text>
-          {/* <Ionicon name="trash" size={30} color="red" /> */}
         </Pressable>
       )}
     </View>
